@@ -1,4 +1,4 @@
-import { Box, OrbitControls } from "@react-three/drei";
+import { Box, OrbitControls, Sphere } from "@react-three/drei";
 
 import Color from "./Color";
 import { Perf } from "r3f-perf";
@@ -9,10 +9,9 @@ export default function Experience() {
 	return (
 		<>
 			<Perf position="top-left" />
-			<Box />
 			<Box position={[0, 0, -2]} />
 			<Skull position-x={2} />
-
+			<Skull />
 			<Effects />
 			<Color />
 			<OrbitControls />
