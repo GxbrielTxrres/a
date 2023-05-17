@@ -5,7 +5,10 @@ import Experience from "../../components/Experience";
 export default function App({ Component, pageProps }) {
 	return (
 		<>
-			<Canvas gl={{ antialias: false }} style={{ ...styles }}>
+			<Canvas
+				gl={{ antialias: false, stencil: false }}
+				style={{ ...styles }}
+			>
 				<Experience />
 			</Canvas>
 			<Component {...pageProps} />
