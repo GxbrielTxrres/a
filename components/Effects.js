@@ -43,12 +43,12 @@ export default function Effects() {
 	return (
 		<EffectComposer disableNormalPass multisampling={0}>
 			<Bloom mipmapBlur luminanceThreshold={0.3} />
-			{/* <Autofocus
-				// mouse
+			<Autofocus
+				mouse
 				resolutionScale={isMobile >= 1200 ? 0.3 : 1}
 				focusRange={0.005}
 				bokehScale={8}
-			/> */}
+			/>
 			{enabled && <SSR {...props} />}
 		</EffectComposer>
 	);

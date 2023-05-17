@@ -17,7 +17,8 @@ export function Spaceship(props) {
 
 	useEffect(() => {
 		Object.values(materials).forEach((material) => {
-			material.envMapIntensity = 0.5;
+			material.envMapIntensity = 0.1;
+			material.roughness = 0.2;
 		});
 	}, []);
 	return (

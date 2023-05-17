@@ -7,6 +7,7 @@ export default function App({ Component, pageProps }) {
 		<>
 			<Canvas
 				gl={{ antialias: false, stencil: false }}
+				camera={{ fov: 30 }}
 				style={{ ...styles }}
 			>
 				<Experience />
