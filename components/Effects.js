@@ -14,13 +14,11 @@ export default function Effects() {
 		return (
 			<EffectComposer disableNormalPass multisampling={0}>
 				<Bloom mipmapBlur intensity={0.8} />
-				<SMAA edgeDetectionMode={EdgeDetectionMode.LUMA} />
+				<SMAA />
 
 				{autoFocus && (
 					<Autofocus
 						focusRange={0.015}
-						// width={512}
-						// height={512}
 						resolutionX={512}
 						resolutionY={512}
 						resolutionScale={window.innerWidth < 500 ? 0.7 : 1}
