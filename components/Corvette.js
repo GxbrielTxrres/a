@@ -7,19 +7,21 @@ Source: https://sketchfab.com/3d-models/corvette-stingray-edabade6d6074197ba73a5
 Title: Corvette Stingray
 */
 
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Color } from "three";
-import { useControls } from "leva";
 
-export function Model({ color = new Color(3, 3, 3), ...props }) {
-	useEffect(() => {
+export function Model({ color, ...props }) {
+	const black = new Color(0, 0, 0);
+	const brightLights = new Color(4, 4, 4);
+	useLayoutEffect(() => {
 		materials.material.toneMapped = false;
-		materials.material.color = new Color(0, 0, 0);
+		materials.material.color = black;
 		materials.material.metalness = 1;
 		materials.material.roughness = 0;
 		materials.material.envMapIntensity = 4;
 	}, []);
+
 	const { nodes, materials } = useGLTF("/corvette-transformed.glb");
 
 	// const { position, target, intensity, col, form, scale } = useControls({
@@ -49,18 +51,12 @@ export function Model({ color = new Color(3, 3, 3), ...props }) {
 		<group {...props} dispose={null}>
 			<mesh position={[1.37, 1.385, 6.62]} scale={0.08}>
 				<sphereGeometry />
-				<meshStandardMaterial
-					toneMapped={false}
-					color={new Color(4, 4, 4)}
-				/>
+				<meshStandardMaterial toneMapped={false} color={brightLights} />
 			</mesh>
 
 			<mesh position={[-1.36, 1.385, 6.62]} scale={0.08}>
 				<sphereGeometry />
-				<meshStandardMaterial
-					toneMapped={false}
-					color={new Color(4, 4, 4)}
-				/>
+				<meshStandardMaterial toneMapped={false} color={brightLights} />
 			</mesh>
 			<group position={[0, 0.53, 2.93]} rotation={[-Math.PI / 2, 0, 0]}>
 				<group

@@ -5,7 +5,7 @@ import {
 	useTexture,
 } from "@react-three/drei";
 import { Model } from "./Corvette";
-import { RepeatWrapping, Vector3 } from "three";
+import { Color, RepeatWrapping, Vector3 } from "three";
 import Env from "./Env";
 import Effects from "./Effects";
 import { Perf } from "r3f-perf";
@@ -22,11 +22,14 @@ export default function Experience() {
 		},
 	};
 
+	const color = new Color(3, 3, 3);
+
 	const [map] = useTexture(["/textures/textures/backgroundTexture.jpg"]);
 	return (
 		<>
 			{/* lighting + effects */}
-			<Env />
+			<Perf position="top-left" />
+			<Env color={color} />
 			<Effects />
 			<mesh
 				scale={[70, 40, 1]}
@@ -39,9 +42,9 @@ export default function Experience() {
 
 			{/* Scene */}
 			<group>
-				<Model {...config.model} />
+				<Model {...config.model} color={color} />
 				<Floor />
-				<ContactShadows position={[0, -0.499, 0]} frames={120} />
+				<ContactShadows position={[0, -0.499, 0]} frames={60} />
 			</group>
 			<Camera />
 			{/* <CameraControls /> */}
@@ -56,7 +59,7 @@ function Floor() {
 
 			<MeshReflectorMaterial
 				blur={[300, 100]}
-				resolution={1028}
+				resolution={1024}
 				mixBlur={1}
 				mixStrength={40}
 				roughness={0.5}
@@ -73,20 +76,17 @@ function Floor() {
 
 function Camera() {
 	const camera = useThree((state) => state.camera);
-
 	useLayoutEffect(() => {
-		camera.position.set(-0.575, -0.1, 0);
 		// camera.lookAt(-0.5, -0.1, -1);
-
 		camera.fov = window.innerWidth < 1020 ? 50 : 30;
 		camera.updateProjectionMatrix();
 	}, [camera]);
 
-	useFrame((state, delta) => {
-		if (state.clock.elapsedTime > 1) {
-			easing.damp3(camera.position, new Vector3(0, 0, 5), 1.5, delta);
-		}
-	});
+	// useFrame((state, delta) => {
+	// 	if (state.clock.elapsedTime > 1) {
+	// 		easing.damp3(camera.position, new Vector3(0, 0, 5), 1.5, delta);
+	// 	}
+	// });
 
 	useEffect(() => {}, []);
 	return;
