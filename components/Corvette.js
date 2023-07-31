@@ -10,10 +10,10 @@ Title: Corvette Stingray
 import React, { useLayoutEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { Color } from "three";
+import { useCarStore } from "../stores/store";
 
 export function Model({ color, ...props }) {
-	const black = new Color(0, 0, 0);
-	const brightLights = new Color(4, 4, 4);
+	const { brightLights, black } = useCarStore();
 	useLayoutEffect(() => {
 		materials.material.toneMapped = false;
 		materials.material.color = black;

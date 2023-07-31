@@ -4,8 +4,8 @@ import { Color, Light } from "three";
 import { useControls } from "leva";
 
 export default function Env({ color }) {
+	const [map] = useTexture(["/textures/textures/backgroundTexture.jpg"]);
 	const envMemo = useMemo(() => {
-		const [map] = useTexture(["/textures/textures/backgroundTexture.jpg"]);
 		return (
 			<Environment resolution={128} frames={1}>
 				<mesh scale={[30, 40, 1]} position={[0, 6, -19]}>
