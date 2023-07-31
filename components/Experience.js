@@ -51,13 +51,16 @@ export default function Experience() {
 }
 
 function Floor() {
+	const { resolution } = useControls("Floor", {
+		resolution: { value: 1028, step: 256, min: 0, max: 2048 },
+	});
 	return (
 		<mesh position-y={-0.5} rotation-x={-Math.PI / 2} scale={[15, 10, 1]}>
 			<planeGeometry />
 
 			<MeshReflectorMaterial
 				blur={[300, 100]}
-				resolution={1028}
+				resolution={resolution}
 				mixBlur={1}
 				mixStrength={40}
 				roughness={0.5}
@@ -76,7 +79,7 @@ function Camera() {
 	const camera = useThree((state) => state.camera);
 
 	useLayoutEffect(() => {
-		camera.position.set(-0.575, -0.1, -0.7);
+		camera.position.set(-0.575, -0.1, 0);
 		// camera.lookAt(-0.5, -0.1, -1);
 
 		camera.fov = window.innerWidth < 1020 ? 50 : 30;
@@ -84,7 +87,9 @@ function Camera() {
 	}, [camera]);
 
 	useFrame((state, delta) => {
-		easing.damp3(camera.position, new Vector3(0, 0, 5), 2, delta);
+		if (state.clock.elapsedTime > 1) {
+			easing.damp3(camera.position, new Vector3(0, 0, 5), 1.5, delta);
+		}
 	});
 
 	useEffect(() => {}, []);
