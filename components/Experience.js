@@ -53,13 +53,16 @@ export default function Experience() {
 }
 
 function Floor() {
+	const { resolution } = useControls("Reflector", {
+		resolution: { value: 512, min: 0, max: 1024, step: 256 },
+	});
 	return (
 		<mesh position-y={-0.5} rotation-x={-Math.PI / 2} scale={[15, 10, 1]}>
 			<planeGeometry />
 
 			<MeshReflectorMaterial
 				blur={[300, 100]}
-				resolution={1024}
+				resolution={resolution}
 				mixBlur={1}
 				mixStrength={40}
 				roughness={0.5}
