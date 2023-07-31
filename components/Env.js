@@ -6,7 +6,7 @@ const color = new Color(3, 3, 3);
 export default function Env() {
 	const [map] = useTexture(["/textures/textures/backgroundTexture.jpg"]);
 	return (
-		<Environment resolution={128}>
+		<Environment resolution={128} frames={1}>
 			<mesh scale={[30, 40, 1]} position={[0, 6, -19]}>
 				<planeGeometry />
 				<meshBasicMaterial map={map} />

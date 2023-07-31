@@ -14,36 +14,37 @@ import { useControls } from "leva";
 
 export function Model({ color = new Color(3, 3, 3), ...props }) {
 	useEffect(() => {
-		materials.material.color = new Color(0, 0, 0);
 		materials.material.toneMapped = false;
+		materials.material.color = new Color(0, 0, 0);
 		materials.material.metalness = 1;
 		materials.material.roughness = 0;
 		materials.material.envMapIntensity = 4;
 	}, []);
 	const { nodes, materials } = useGLTF("/corvette-transformed.glb");
-	const { position, target, intensity, col, form, scale } = useControls({
-		scale: {
-			value: { x: 0, y: 0, z: 0 },
-			min: -20,
-			max: 20,
-			step: 0.01,
-		},
-		position: {
-			value: { x: 0, y: 0, z: 0 },
-			min: -20,
-			max: 20,
-			step: 0.01,
-		},
-		target: {
-			value: { x: 0, y: 0, z: 0 },
-			min: -20,
-			max: 20,
-			step: 0.25,
-		},
-		intensity: { value: 1, min: 0, max: 50, step: 0.5 },
-		color: "#ffffff",
-		form: { value: "rect", options: ["circle", "ring", "rect"] },
-	});
+
+	// const { position, target, intensity, col, form, scale } = useControls({
+	// 	scale: {
+	// 		value: { x: 0, y: 0, z: 0 },
+	// 		min: -20,
+	// 		max: 20,
+	// 		step: 0.01,
+	// 	},
+	// 	position: {
+	// 		value: { x: 0, y: 0, z: 0 },
+	// 		min: -20,
+	// 		max: 20,
+	// 		step: 0.01,
+	// 	},
+	// 	target: {
+	// 		value: { x: 0, y: 0, z: 0 },
+	// 		min: -20,
+	// 		max: 20,
+	// 		step: 0.25,
+	// 	},
+	// 	intensity: { value: 1, min: 0, max: 50, step: 0.5 },
+	// 	color: "#ffffff",
+	// 	form: { value: "rect", options: ["circle", "ring", "rect"] },
+	// });
 	return (
 		<group {...props} dispose={null}>
 			<mesh position={[1.37, 1.385, 6.62]} scale={0.08}>

@@ -17,7 +17,7 @@ export default function Experience() {
 	const config = {
 		model: {
 			scale: 0.3,
-			position: [0.5, -0.5, -3],
+			position: [0.5, -0.5, -2],
 			rotation: [0, -Math.PI / 6, 0],
 		},
 	};
@@ -51,7 +51,6 @@ export default function Experience() {
 }
 
 function Floor() {
-	const { color } = useControls("Reflector", { color: "#3f3f3f" });
 	return (
 		<mesh position-y={-0.5} rotation-x={-Math.PI / 2} scale={[15, 10, 1]}>
 			<planeGeometry />
