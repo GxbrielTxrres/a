@@ -25,7 +25,6 @@ export default function Experience() {
 	const [map] = useTexture(["/textures/textures/backgroundTexture.jpg"]);
 	return (
 		<>
-			<Perf />
 			{/* lighting + effects */}
 			<Env />
 			<Effects />
@@ -51,16 +50,13 @@ export default function Experience() {
 }
 
 function Floor() {
-	const { resolution } = useControls("Floor", {
-		resolution: { value: 1028, step: 256, min: 0, max: 2048 },
-	});
 	return (
 		<mesh position-y={-0.5} rotation-x={-Math.PI / 2} scale={[15, 10, 1]}>
 			<planeGeometry />
 
 			<MeshReflectorMaterial
 				blur={[300, 100]}
-				resolution={resolution}
+				resolution={1028}
 				mixBlur={1}
 				mixStrength={40}
 				roughness={0.5}

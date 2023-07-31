@@ -13,37 +13,7 @@ import { useControls } from "leva";
 import { useState } from "react";
 
 export default function Effects() {
-	// const {
-	// 	enabled,
-	// 	denoiseIterations,
-	// 	denoiseKernel,
-	// 	denoiseDiffuse,
-	// 	denoiseSpecular,
-	// 	roughnessPhi,
-	// 	depthPhi,
-	// 	steps,
-	// 	refineSteps,
-	// 	resolutionScale,
-	// 	spp,
-	// 	blend,
-	// 	maxRoughness,
-	// 	envBlur,
-	// 	distance,
-	// 	autoThickness,
-	// 	thickness,
-	// } = useControls();
-
-	const [isMobile] = useState(window.innerWidth);
-
-	const { autoFocus, width, height, resolutionScale, ...props } = useControls(
-		"Effects",
-		{
-			autoFocus: true,
-			width: { value: 512, min: 0, max: 1024, step: 256 },
-			height: { value: 512, min: 0, max: 1024, step: 256 },
-			resolutionScale: { value: 1, step: 0.1, max: 1, min: 0 },
-		},
-	);
+	const { autoFocus } = useControls("Effects", { autoFocus: true });
 
 	return (
 		<EffectComposer disableNormalPass multisampling={0}>
@@ -59,9 +29,9 @@ export default function Effects() {
 			{autoFocus && (
 				<Autofocus
 					focusRange={0.015}
-					width={width}
-					height={height}
-					resolutionScale={resolutionScale}
+					width={512}
+					height={512}
+					resolutionScale={window.innerWidth < 500 ? 0.7 : 1}
 					bokehScale={5}
 				/>
 			)}
