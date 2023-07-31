@@ -3,8 +3,7 @@ import { useMemo } from "react";
 import { Color, Light } from "three";
 import { useControls } from "leva";
 
-export default function Env({ color }) {
-	const [map] = useTexture(["/textures/textures/backgroundTexture.jpg"]);
+export default function Env({ color, map }) {
 	const envMemo = useMemo(() => {
 		return (
 			<Environment resolution={128} frames={1}>

@@ -29,7 +29,7 @@ export default function Experience() {
 		<>
 			{/* lighting + effects */}
 			<Perf position="top-left" />
-			<Env color={color} />
+			<Env color={color} map={map} />
 			<Effects />
 			<mesh
 				scale={[70, 40, 1]}
@@ -76,8 +76,12 @@ function Floor() {
 
 function Camera() {
 	const camera = useThree((state) => state.camera);
+	const { setDpr } = useThree();
 	useLayoutEffect(() => {
 		// camera.lookAt(-0.5, -0.1, -1);
+		if (window.innerWidth > 700) {
+			setDpr(window.devicePixelRatio * 0.7);
+		}
 		camera.fov = window.innerWidth < 1020 ? 50 : 30;
 		camera.updateProjectionMatrix();
 	}, [camera]);
