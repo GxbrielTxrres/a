@@ -37,7 +37,6 @@ export default function Experience() {
 	return (
 		<>
 			{/* lighting + effects */}
-			<Perf position="top-left" />
 			<Env color={color} map={map} />
 			<Effects />
 			<Txt />
