@@ -7,56 +7,56 @@ Source: https://sketchfab.com/3d-models/corvette-stingray-edabade6d6074197ba73a5
 Title: Corvette Stingray
 */
 
-import React, { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
-import { Color } from "three";
 import { useCarStore } from "../stores/store";
+import { patchShaders } from "gl-noise";
+import { gsap } from "gsap";
+import CSM from "three-custom-shader-material";
+import { Vector2, Color, Vector3 } from "three";
+import { useFrame } from "@react-three/fiber";
+import { easing } from "maath";
+import { useControls } from "leva";
 
-export function Model({ color, ...props }) {
-	const { brightLights, black } = useCarStore();
-	useLayoutEffect(() => {
-		materials.material.toneMapped = false;
-		materials.material.color = black;
-		materials.material.metalness = 1;
-		materials.material.roughness = 0;
-		materials.material.envMapIntensity = 4;
-	}, []);
-
+export function Model(props) {
+	const material = useRef();
+	const trunk = useRef();
 	const { nodes, materials } = useGLTF("/corvette-transformed.glb");
 
-	// const { position, target, intensity, col, form, scale } = useControls({
-	// 	scale: {
-	// 		value: { x: 0, y: 0, z: 0 },
-	// 		min: -20,
-	// 		max: 20,
-	// 		step: 0.01,
-	// 	},
-	// 	position: {
-	// 		value: { x: 0, y: 0, z: 0 },
-	// 		min: -20,
-	// 		max: 20,
-	// 		step: 0.01,
-	// 	},
-	// 	target: {
-	// 		value: { x: 0, y: 0, z: 0 },
-	// 		min: -20,
-	// 		max: 20,
-	// 		step: 0.25,
-	// 	},
-	// 	intensity: { value: 1, min: 0, max: 50, step: 0.5 },
-	// 	color: "#ffffff",
-	// 	form: { value: "rect", options: ["circle", "ring", "rect"] },
-	// });
+	// rotation-x={1} position={[0, 2.5, -0.7]}
+
+	useEffect(() => {
+		gsap.to(trunk.current.rotation, {
+			x: 1,
+			duration: 2.15,
+			ease: "power2.in",
+		});
+		gsap.to(trunk.current.position, {
+			x: 0,
+			z: -0.7,
+			y: 2.5,
+			delay: 0.9,
+			duration: 0.5,
+			ease: "power2.in",
+		});
+	}, []);
+
 	return (
 		<group {...props} dispose={null}>
 			<mesh position={[1.37, 1.385, 6.62]} scale={0.08}>
 				<sphereGeometry />
-				<meshStandardMaterial toneMapped={false} color={brightLights} />
+				<meshStandardMaterial
+					toneMapped={false}
+					color={new Color(4, 4, 4)}
+				/>
 			</mesh>
 
 			<mesh position={[-1.36, 1.385, 6.62]} scale={0.08}>
 				<sphereGeometry />
-				<meshStandardMaterial toneMapped={false} color={brightLights} />
+				<meshStandardMaterial
+					toneMapped={false}
+					color={new Color(4, 4, 4)}
+				/>
 			</mesh>
 			<group position={[0, 0.53, 2.93]} rotation={[-Math.PI / 2, 0, 0]}>
 				<group
@@ -84,10 +84,9 @@ export function Model({ color, ...props }) {
 						geometry={nodes.Object_50.geometry}
 						material={materials.Glass_Red}
 					/>
-					<mesh
-						geometry={nodes.Object_51.geometry}
-						material={materials.material}
-					/>
+					<mesh geometry={nodes.Object_51.geometry} ref={material}>
+						<CarMaterial />
+					</mesh>
 				</group>
 				<group
 					position={[0, 0.1, -0.53]}
@@ -104,16 +103,18 @@ export function Model({ color, ...props }) {
 				</group>
 				<mesh
 					geometry={nodes.Object_6.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_11.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_13.geometry}
 					material={materials.Border}
@@ -122,16 +123,18 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_15.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_17.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_19.geometry}
 					material={materials.TintedGlass}
@@ -150,24 +153,31 @@ export function Model({ color, ...props }) {
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
-				<mesh
-					geometry={nodes.Object_25.geometry}
-					material={materials.TintedGlass}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
-				<mesh
-					geometry={nodes.Object_27.geometry}
-					material={materials.Border}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
-				<mesh
-					geometry={nodes.Object_29.geometry}
-					material={materials.material}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				{/* Back Window */}
+
+				{/* Trunk */}
+				<group ref={trunk}>
+					<mesh
+						geometry={nodes.Object_29.geometry}
+						position={[0, 0.1, -0.53]}
+						rotation={[Math.PI / 2, 0, 0]}
+					>
+						<CarMaterial />
+					</mesh>
+					<mesh
+						geometry={nodes.Object_25.geometry}
+						material={materials.TintedGlass}
+						position={[0, 0.1, -0.53]}
+						rotation={[Math.PI / 2, 0, 0]}
+					/>
+					<mesh
+						geometry={nodes.Object_27.geometry}
+						material={materials.Border}
+						position={[0, 0.1, -0.53]}
+						rotation={[Math.PI / 2, 0, 0]}
+					/>
+				</group>
+
 				<mesh
 					geometry={nodes.Object_31.geometry}
 					material={materials.RoughMirror}
@@ -192,9 +202,26 @@ export function Model({ color, ...props }) {
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
+				{/* Doors */}
 				<mesh
 					geometry={nodes.Object_39.geometry}
-					material={materials.material}
+					position={[0, 0.1, -0.53]}
+					rotation={[Math.PI / 2, 0, 0]}
+				>
+					<CarMaterial />
+				</mesh>
+
+				{/* Mirrors */}
+				<mesh
+					geometry={nodes.Object_104.geometry}
+					position={[0, 0.1, -0.53]}
+					rotation={[Math.PI / 2, 0, 0]}
+				>
+					<CarMaterial />
+				</mesh>
+				<mesh
+					geometry={nodes.Object_106.geometry}
+					material={materials.Mirror}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
@@ -206,10 +233,11 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_43.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_45.geometry}
 					material={materials.Mirror}
@@ -224,16 +252,18 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_53.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_55.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_57.geometry}
 					material={materials.Border}
@@ -266,10 +296,11 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_67.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_69.geometry}
 					material={materials.RoughGlass}
@@ -306,24 +337,7 @@ export function Model({ color, ...props }) {
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
-				<mesh
-					geometry={nodes.Object_81.geometry}
-					material={materials.Border}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
-				<mesh
-					geometry={nodes.Object_83.geometry}
-					material={materials.Border}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
-				<mesh
-					geometry={nodes.Object_85.geometry}
-					material={materials.Border}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				{/* Door Windows */}
 				<mesh
 					geometry={nodes.Object_87.geometry}
 					material={materials.TintedGlass}
@@ -354,30 +368,47 @@ export function Model({ color, ...props }) {
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
-				<mesh
-					geometry={nodes.Object_100.geometry}
-					material={materials.material}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				{/* Hood */}
+				<group rotation-x={Math.PI / 4} position={[0, -0.6, 3.05]}>
+					<mesh
+						geometry={nodes.Object_100.geometry}
+						position={[0, 0.1, -0.53]}
+						// position={[0, -0.4, 2.95]}
+						//1.3
+						rotation={[Math.PI / 2, 0, 0]}
+					>
+						<CarMaterial />
+					</mesh>
+					<group>
+						<mesh
+							geometry={nodes.Object_81.geometry}
+							material={materials.Border}
+							position={[0, 0.1, -0.53]}
+							rotation={[Math.PI / 2, 0, 0]}
+						/>
+						<mesh
+							geometry={nodes.Object_83.geometry}
+							material={materials.Border}
+							position={[0, 0.1, -0.53]}
+							rotation={[Math.PI / 2, 0, 0]}
+						/>
+						<mesh
+							geometry={nodes.Object_85.geometry}
+							material={materials.Border}
+							position={[0, 0.1, -0.53]}
+							rotation={[Math.PI / 2, 0, 0]}
+						/>
+					</group>
+				</group>
 				<mesh
 					geometry={nodes.Object_102.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
-				<mesh
-					geometry={nodes.Object_104.geometry}
-					material={materials.material}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
-				<mesh
-					geometry={nodes.Object_106.geometry}
-					material={materials.Mirror}
-					position={[0, 0.1, -0.53]}
-					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
+				{/* Mirrors */}
+
 				<mesh
 					geometry={nodes.Object_108.geometry}
 					material={materials.Border}
@@ -476,22 +507,25 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_140.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_142.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_144.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_146.geometry}
 					material={materials.Light}
@@ -506,10 +540,11 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_150.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_152.geometry}
 					material={materials.Border}
@@ -548,10 +583,11 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_164.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_166.geometry}
 					material={materials["Glass.001"]}
@@ -578,16 +614,18 @@ export function Model({ color, ...props }) {
 				/>
 				<mesh
 					geometry={nodes.Object_174.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_176.geometry}
-					material={materials.material}
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
-				/>
+				>
+					<CarMaterial />
+				</mesh>
 				<mesh
 					geometry={nodes.Object_178.geometry}
 					material={materials.Mirror}
@@ -606,6 +644,7 @@ export function Model({ color, ...props }) {
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
+				{/* Windshield */}
 				<mesh
 					geometry={nodes.Object_184.geometry}
 					material={materials.TintedGlass}
@@ -838,3 +877,108 @@ export function Model({ color, ...props }) {
 }
 
 useGLTF.preload("/corvette-transformed.glb");
+
+export default function CarMaterial() {
+	const ref = useRef();
+	const { materials } = useGLTF("/corvette-transformed.glb");
+	const { color } = useCarStore();
+	const uniforms = useRef({
+		uProgress: { value: 1 },
+		uResolution: {
+			value: new Vector2(window.innerWidth, window.innerHeight),
+		},
+		uNewColor: { value: new Color(color.r, color.g, color.b) },
+		uOriginalColor: { value: new Color(0, 0, 0) },
+	});
+
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			uniforms.current.uNewColor.value = color;
+		}, 1000);
+
+		return () => clearTimeout(timeout);
+	}, [color]);
+
+	useEffect(() => {
+		if (uniforms.current.uProgress.value === 1) {
+			gsap.to(uniforms.current.uProgress, {
+				value: 0,
+				duration: 3,
+				ease: "power2.inOut",
+			});
+		} else if (uniforms.current.uProgress.value === 0) {
+			gsap.to(uniforms.current.uProgress, {
+				value: 1,
+				duration: 1.25,
+				repeat: 1,
+				yoyo: true,
+				ease: "power2.inOut",
+			});
+		}
+	}, [color]);
+
+	const vertexShader = useMemo(
+		() => /* glsl */ `
+        varying vec2 custom_vUv;
+        uniform float uProgress;
+        
+        void main() {
+          custom_vUv = uv;
+
+
+  
+        }
+      `,
+		[],
+	);
+
+	const fragmentShader = useMemo(
+		() =>
+			patchShaders(/* glsl */ `
+          varying vec2 custom_vUv;
+
+          uniform float uProgress;
+		  uniform vec2 uResolution;
+		  uniform vec3 uNewColor;
+		  uniform vec3 uOriginalColor;
+
+		  float plot(vec2 st) {    
+			return smoothstep(0.001, 0.0, abs(st.y - st.x));
+		}
+          
+          void main() {
+             
+            vec2 st = gl_FragCoord.xy / uResolution * uProgress - 0.5;
+
+
+			vec3 color = vec3(uOriginalColor);
+
+			float pct = plot(st);
+
+
+			color = (1.0-pct)*color+pct*uNewColor;
+
+                       
+            csm_DiffuseColor = vec4(color,1.0);
+          }
+        `),
+		[],
+	);
+
+	return (
+		<>
+			<CSM
+				ref={ref}
+				key={vertexShader + fragmentShader}
+				baseMaterial={materials.material}
+				vertexShader={vertexShader}
+				fragmentShader={fragmentShader}
+				uniforms={uniforms.current}
+				toneMapped={false}
+				metalness={1}
+				roughness={0}
+				envMapIntensity={4}
+			/>
+		</>
+	);
+}

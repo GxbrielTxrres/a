@@ -9,9 +9,8 @@ import { EdgeDetectionMode } from "postprocessing";
 import { useMemo } from "react";
 
 export default function Effects() {
-	const { autoFocus, resolution } = useControls("Effects", {
+	const { autoFocus } = useControls("Effects", {
 		autoFocus: true,
-		resolution: { value: 512, min: 0, max: 512, step: 256 },
 	});
 	return (
 		<EffectComposer disableNormalPass multisampling={0}>
@@ -20,9 +19,9 @@ export default function Effects() {
 
 			{autoFocus && (
 				<Autofocus
-					focusRange={0.015}
-					resolutionX={resolution}
-					resolutionY={resolution}
+					focusRange={0.007}
+					resolutionX={window.innerWidth < 700 ? 256 : 512}
+					resolutionY={window.innerWidth < 700 ? 256 : 512}
 					resolutionScale={window.innerWidth < 500 ? 0.7 : 1}
 					bokehScale={5}
 				/>

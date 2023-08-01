@@ -6,6 +6,6 @@ export const useCarStore = create((set) => ({
 	increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
 	removeAllBears: () => set({ bears: 0 }),
 
-	brightLights: new Color(4, 4, 4),
-	black: new Color(0, 0, 0),
+	color: { r: 0, g: 0, b: 0 },
+	progress: 1,
 }));
