@@ -13,32 +13,100 @@ import { useCarStore } from "../stores/store";
 import { patchShaders } from "gl-noise";
 import { gsap } from "gsap";
 import CSM from "three-custom-shader-material";
-import { Vector2, Color, Vector3 } from "three";
-import { useFrame } from "@react-three/fiber";
-import { easing } from "maath";
+import { Vector2, Color } from "three";
 import { useControls } from "leva";
 
 export function Model(props) {
-	const material = useRef();
 	const trunk = useRef();
+	const hood = useRef();
+	const group = useRef();
+	const hoodScoop = useRef();
+
+	const { openTrunk, openHood } = useCarStore();
+
 	const { nodes, materials } = useGLTF("/corvette-transformed.glb");
 
-	// rotation-x={1} position={[0, 2.5, -0.7]}
+	function toggleTrunk() {
+		if (openTrunk === false) {
+			gsap.to(trunk.current.rotation, {
+				x: 0,
+				duration: 2.15,
+				ease: "power2.inOut",
+			});
+
+			// Y AND Z AXIS ARE SWAPPED
+			gsap.to(trunk.current.position, {
+				x: 0,
+				y: 3.12,
+				z: 2.25,
+				duration: 2.15,
+				ease: "power2.inOut",
+			});
+		} else {
+			gsap.to(trunk.current.rotation, {
+				x: Math.PI / 4,
+				duration: 2.15,
+				ease: "power3.inOut",
+			});
+
+			// Y AND Z AXIS ARE SWAPPED
+			gsap.to(trunk.current.position, {
+				y: 2.8,
+				z: 2.9,
+				duration: 2.15,
+				ease: "power3.inOut",
+			});
+		}
+	}
+
+	function toggleHood() {
+		if (openHood === false) {
+			gsap.to(group.current.position, {
+				x: 0,
+				y: 0,
+				z: 0,
+				ease: "power3.inOut",
+				duration: 3,
+			});
+
+			gsap.to(group.current.rotation, {
+				x: 0,
+				duration: 3,
+				ease: "power3.inOut",
+			});
+		} else {
+			gsap.to(group.current.position, {
+				y: -1.25,
+				z: -0.55,
+				ease: "power3.inOut",
+
+				duration: 3,
+			});
+
+			gsap.to(group.current.rotation, {
+				x: -Math.PI / 4,
+				duration: 3,
+				ease: "power3.inOut",
+			});
+		}
+	}
 
 	useEffect(() => {
-		gsap.to(trunk.current.rotation, {
-			x: 1,
-			duration: 2.15,
-			ease: "power2.in",
+		toggleTrunk();
+		toggleHood();
+	}, [openTrunk, openHood]);
+
+	useEffect(() => {
+		// center geometries
+		trunk.current.children.forEach((child) => child.geometry.center());
+
+		hood.current.children.forEach((child) => {
+			if (child.geometry) {
+				child.geometry.center();
+			}
 		});
-		gsap.to(trunk.current.position, {
-			x: 0,
-			z: -0.7,
-			y: 2.5,
-			delay: 0.9,
-			duration: 0.5,
-			ease: "power2.in",
-		});
+
+		hoodScoop.current.children.forEach((child) => child.geometry.center());
 	}, []);
 
 	return (
@@ -84,7 +152,7 @@ export function Model(props) {
 						geometry={nodes.Object_50.geometry}
 						material={materials.Glass_Red}
 					/>
-					<mesh geometry={nodes.Object_51.geometry} ref={material}>
+					<mesh geometry={nodes.Object_51.geometry}>
 						<CarMaterial />
 					</mesh>
 				</group>
@@ -153,29 +221,70 @@ export function Model(props) {
 					position={[0, 0.1, -0.53]}
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
-				{/* Back Window */}
 
-				{/* Trunk */}
-				<group ref={trunk}>
-					<mesh
-						geometry={nodes.Object_29.geometry}
-						position={[0, 0.1, -0.53]}
-						rotation={[Math.PI / 2, 0, 0]}
-					>
-						<CarMaterial />
-					</mesh>
-					<mesh
-						geometry={nodes.Object_25.geometry}
-						material={materials.TintedGlass}
-						position={[0, 0.1, -0.53]}
-						rotation={[Math.PI / 2, 0, 0]}
-					/>
-					<mesh
-						geometry={nodes.Object_27.geometry}
-						material={materials.Border}
-						position={[0, 0.1, -0.53]}
-						rotation={[Math.PI / 2, 0, 0]}
-					/>
+				<group>
+					{/* Hood */}
+					<group ref={group}>
+						<group
+							ref={hood}
+							position={[0, -2.7, 1.665]}
+							// rotation-x={Math.PI / 4}
+							// position={[0, -0.6, 3.05]}
+						>
+							<mesh
+								geometry={nodes.Object_100.geometry}
+								position={[0, 0.1, -0.53]}
+								// position={[0, -0.4, 2.95]}
+								//1.3
+								rotation={[Math.PI / 2, 0, 0]}
+							>
+								<CarMaterial />
+							</mesh>
+							<group ref={hoodScoop} position-y={-0.63}>
+								<mesh
+									geometry={nodes.Object_81.geometry}
+									material={materials.Border}
+									position={[0, 0.1, -0.53]}
+									rotation={[Math.PI / 2, 0, 0]}
+								/>
+								<mesh
+									geometry={nodes.Object_83.geometry}
+									material={materials.Border}
+									position={[0, 0.1, -0.53]}
+									rotation={[Math.PI / 2, 0, 0]}
+								/>
+								<mesh
+									geometry={nodes.Object_85.geometry}
+									material={materials.Border}
+									position={[0, 0.1, -0.53]}
+									rotation={[Math.PI / 2, 0, 0]}
+								/>
+							</group>
+						</group>
+					</group>
+
+					{/* Trunk */}
+					<group ref={trunk} position={[0, 3.12, 2.25]}>
+						<mesh
+							geometry={nodes.Object_29.geometry}
+							position={[0, 0.1, -0.53]}
+							rotation={[Math.PI / 2, 0, 0]}
+						>
+							<CarMaterial />
+						</mesh>
+						<mesh
+							geometry={nodes.Object_25.geometry}
+							material={materials.TintedGlass}
+							position={[0, 0.1, -0.53]}
+							rotation={[Math.PI / 2, 0, 0]}
+						/>
+						<mesh
+							geometry={nodes.Object_27.geometry}
+							material={materials.Border}
+							position={[0, 0.1, -0.53]}
+							rotation={[Math.PI / 2, 0, 0]}
+						/>
+					</group>
 				</group>
 
 				<mesh
@@ -369,37 +478,7 @@ export function Model(props) {
 					rotation={[Math.PI / 2, 0, 0]}
 				/>
 				{/* Hood */}
-				<group rotation-x={Math.PI / 4} position={[0, -0.6, 3.05]}>
-					<mesh
-						geometry={nodes.Object_100.geometry}
-						position={[0, 0.1, -0.53]}
-						// position={[0, -0.4, 2.95]}
-						//1.3
-						rotation={[Math.PI / 2, 0, 0]}
-					>
-						<CarMaterial />
-					</mesh>
-					<group>
-						<mesh
-							geometry={nodes.Object_81.geometry}
-							material={materials.Border}
-							position={[0, 0.1, -0.53]}
-							rotation={[Math.PI / 2, 0, 0]}
-						/>
-						<mesh
-							geometry={nodes.Object_83.geometry}
-							material={materials.Border}
-							position={[0, 0.1, -0.53]}
-							rotation={[Math.PI / 2, 0, 0]}
-						/>
-						<mesh
-							geometry={nodes.Object_85.geometry}
-							material={materials.Border}
-							position={[0, 0.1, -0.53]}
-							rotation={[Math.PI / 2, 0, 0]}
-						/>
-					</group>
-				</group>
+
 				<mesh
 					geometry={nodes.Object_102.geometry}
 					position={[0, 0.1, -0.53]}
@@ -909,7 +988,7 @@ export default function CarMaterial() {
 		} else if (uniforms.current.uProgress.value === 0) {
 			gsap.to(uniforms.current.uProgress, {
 				value: 1,
-				duration: 1.25,
+				duration: 1,
 				repeat: 1,
 				yoyo: true,
 				ease: "power2.inOut",
@@ -943,7 +1022,7 @@ export default function CarMaterial() {
 		  uniform vec3 uOriginalColor;
 
 		  float plot(vec2 st) {    
-			return smoothstep(0.001, 0.0, abs(st.y - st.x));
+			return smoothstep(0.01, 0.0, abs(st.y - st.x));
 		}
           
           void main() {

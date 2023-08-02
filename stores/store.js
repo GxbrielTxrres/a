@@ -7,5 +7,6 @@ export const useCarStore = create((set) => ({
 	removeAllBears: () => set({ bears: 0 }),
 
 	color: { r: 0, g: 0, b: 0 },
-	progress: 1,
+	openTrunk: false,
+	openHood: false,
 }));

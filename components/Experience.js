@@ -12,11 +12,8 @@ import Effects from "./Effects";
 import { Perf } from "r3f-perf";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useControls } from "leva";
-import { easing } from "maath";
 import TextureBackground from "./TextureBackground";
 import { useCarStore } from "../stores/store";
-import { gsap } from "gsap";
 export default function Experience() {
 	const config = {
 		model: {
@@ -25,9 +22,12 @@ export default function Experience() {
 			rotation: [0, -Math.PI / 6, 0],
 		},
 		textureBackground: {
-			scale: [70, 40, 1],
+			scale: [12, 12, 1],
 			position: [0, 6, -50],
-			rotation: [0, 0, 0],
+			rotation: [0, Math.PI, 0],
+			width: 5,
+			height: 4,
+			radius: 1,
 		},
 	};
 
@@ -37,6 +37,7 @@ export default function Experience() {
 	return (
 		<>
 			{/* lighting + effects */}
+			<Perf />
 			<Env color={color} map={map} />
 			<Effects />
 			<Txt />
@@ -45,7 +46,7 @@ export default function Experience() {
 				<Model {...config.model} color={color} />
 				<TextureBackground {...config.textureBackground} map={map} />
 				<Floor />
-				<ContactShadows position={[0, -0.499, 0]} frames={60} />
+				<ContactShadows position={[0, -0.499, 0]} frames={20} />
 			</group>
 			<Camera />
 		</>
@@ -83,7 +84,7 @@ function Camera() {
 		camera.updateProjectionMatrix();
 
 		if (window.innerWidth > 700) {
-			setDpr(window.devicePixelRatio * 0.7);
+			setDpr(window.devicePixelRatio * 0.9);
 		}
 	}, []);
 
@@ -91,17 +92,34 @@ function Camera() {
 }
 
 function Txt() {
+	const { openTrunk, openHood } = useCarStore();
 	return (
-		<Text
-			position={[0, -0.45, 1]}
-			scale={0.1}
-			onClick={() => {
-				useCarStore.setState({
-					color: { r: Math.random(), g: Math.random(), b: 0 },
-				});
-			}}
-		>
-			Random Color
-		</Text>
+		<group position={[0, -0.45, 1]} scale={0.075}>
+			<Text
+				position-x={-7}
+				onClick={() => {
+					useCarStore.setState({
+						color: { r: Math.random(), g: Math.random(), b: 0 },
+					});
+				}}
+			>
+				Random Color
+			</Text>
+			<Text
+				onClick={() => {
+					useCarStore.setState({ openTrunk: !openTrunk });
+				}}
+			>
+				{openTrunk ? "Close Trunk" : "Open Trunk"}
+			</Text>
+			<Text
+				position-x={6.5}
+				onClick={() => {
+					useCarStore.setState({ openHood: !openHood });
+				}}
+			>
+				{openHood ? "Close Hood" : "Open Hood"}
+			</Text>
+		</group>
 	);
 }
