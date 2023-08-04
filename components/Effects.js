@@ -19,7 +19,7 @@ export default function Effects() {
 
 			{autoFocus && (
 				<Autofocus
-					focusRange={0.007}
+					focusRange={0.011}
 					resolutionX={window.innerWidth < 700 ? 256 : 512}
 					resolutionY={window.innerWidth < 700 ? 256 : 512}
 					resolutionScale={window.innerWidth < 500 ? 0.7 : 1}

@@ -8,7 +8,7 @@ Title: Corvette Stingray
 */
 
 import { useEffect, useRef, useMemo } from "react";
-import { useGLTF } from "@react-three/drei";
+import { Box, Decal, RenderTexture, Text, useGLTF } from "@react-three/drei";
 import { useCarStore } from "../stores/store";
 import { patchShaders } from "gl-noise";
 import { gsap } from "gsap";
@@ -22,44 +22,14 @@ export function Model(props) {
 	const group = useRef();
 	const hoodScoop = useRef();
 
-	const { openTrunk, openHood } = useCarStore();
-
 	const { nodes, materials } = useGLTF("/corvette-transformed.glb");
 
-	function toggleTrunk() {
-		if (openTrunk === false) {
-			gsap.to(trunk.current.rotation, {
-				x: 0,
-				duration: 2.15,
-				ease: "power2.inOut",
-			});
+	const { openTrunk, openHood } = useControls("Car", {
+		openTrunk: false,
+		openHood: false,
+	});
 
-			// Y AND Z AXIS ARE SWAPPED
-			gsap.to(trunk.current.position, {
-				x: 0,
-				y: 3.12,
-				z: 2.25,
-				duration: 2.15,
-				ease: "power2.inOut",
-			});
-		} else {
-			gsap.to(trunk.current.rotation, {
-				x: Math.PI / 4,
-				duration: 2.15,
-				ease: "power3.inOut",
-			});
-
-			// Y AND Z AXIS ARE SWAPPED
-			gsap.to(trunk.current.position, {
-				y: 2.8,
-				z: 2.9,
-				duration: 2.15,
-				ease: "power3.inOut",
-			});
-		}
-	}
-
-	function toggleHood() {
+	useEffect(() => {
 		if (openHood === false) {
 			gsap.to(group.current.position, {
 				x: 0,
@@ -89,11 +59,37 @@ export function Model(props) {
 				ease: "power3.inOut",
 			});
 		}
-	}
 
-	useEffect(() => {
-		toggleTrunk();
-		toggleHood();
+		if (openTrunk === false) {
+			gsap.to(trunk.current.rotation, {
+				x: 0,
+				duration: 2.15,
+				ease: "power3.inOut",
+			});
+
+			// Y AND Z AXIS ARE SWAPPED
+			gsap.to(trunk.current.position, {
+				x: 0,
+				y: 3.12,
+				z: 2.25,
+				duration: 2.15,
+				ease: "power3.inOut",
+			});
+		} else {
+			gsap.to(trunk.current.rotation, {
+				x: Math.PI / 4,
+				duration: 2.15,
+				ease: "power3.inOut",
+			});
+
+			// Y AND Z AXIS ARE SWAPPED
+			gsap.to(trunk.current.position, {
+				y: 2.8,
+				z: 2.9,
+				duration: 2.15,
+				ease: "power3.inOut",
+			});
+		}
 	}, [openTrunk, openHood]);
 
 	useEffect(() => {
@@ -225,17 +221,10 @@ export function Model(props) {
 				<group>
 					{/* Hood */}
 					<group ref={group}>
-						<group
-							ref={hood}
-							position={[0, -2.7, 1.665]}
-							// rotation-x={Math.PI / 4}
-							// position={[0, -0.6, 3.05]}
-						>
+						<group ref={hood} position={[0, -2.7, 1.665]}>
 							<mesh
 								geometry={nodes.Object_100.geometry}
 								position={[0, 0.1, -0.53]}
-								// position={[0, -0.4, 2.95]}
-								//1.3
 								rotation={[Math.PI / 2, 0, 0]}
 							>
 								<CarMaterial />
@@ -960,7 +949,11 @@ useGLTF.preload("/corvette-transformed.glb");
 export default function CarMaterial() {
 	const ref = useRef();
 	const { materials } = useGLTF("/corvette-transformed.glb");
-	const { color } = useCarStore();
+	let { color } = useControls({
+		color: {
+			options: ["black", "blue", "metallic silver", "grey"],
+		},
+	});
 	const uniforms = useRef({
 		uProgress: { value: 1 },
 		uResolution: {
@@ -971,6 +964,21 @@ export default function CarMaterial() {
 	});
 
 	useEffect(() => {
+		switch (color) {
+			default:
+				"black";
+				color = { r: 0, g: 0, b: 0 };
+				break;
+			case "blue":
+				color = { r: 0, g: 0, b: 1 };
+				break;
+			case "metallic silver":
+				color = { r: 1, g: 1, b: 1 };
+				break;
+			case "grey":
+				color = { r: 0.2, g: 0.2, b: 0.2 };
+				break;
+		}
 		const timeout = setTimeout(() => {
 			uniforms.current.uNewColor.value = color;
 		}, 1000);
@@ -1054,9 +1062,9 @@ export default function CarMaterial() {
 				fragmentShader={fragmentShader}
 				uniforms={uniforms.current}
 				toneMapped={false}
-				metalness={1}
-				roughness={0}
-				envMapIntensity={4}
+				metalness={0.9}
+				roughness={0.1}
+				envMapIntensity={3}
 			/>
 		</>
 	);
