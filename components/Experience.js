@@ -1,48 +1,28 @@
 import {
-	CameraControls,
 	ContactShadows,
-	Html,
 	MeshReflectorMaterial,
-	Text,
 	useTexture,
 } from "@react-three/drei";
 import { Model } from "./Corvette";
-import { Color } from "three";
 import Env from "./Env";
 import Effects from "./Effects";
 import { Perf } from "r3f-perf";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import TextureBackground from "./TextureBackground";
+import { config } from "../utils/config";
 export default function Experience() {
-	const config = {
-		model: {
-			scale: 0.3,
-			position: [0.5, -0.5, -2],
-			rotation: [0, -Math.PI / 6, 0],
-		},
-		textureBackground: {
-			scale: [12, 12, 1],
-			position: [0, 6, -50],
-			rotation: [0, Math.PI, 0],
-			width: 5,
-			height: 4,
-			radius: 1,
-		},
-	};
-
-	const color = new Color(3, 3, 3);
-	const [map] = useTexture(["/textures/textures/backgroundTexture.jpg"]);
-
+	const [map] = useTexture([config.env.map]);
 	return (
 		<>
+			<Perf position={"top-left"} />
 			{/* lighting + effects */}
-			<Env color={color} map={map} />
+			<Env map={map} color={config.env.color} />
 			<Effects />
 			{/* Scene */}
 			<ambientLight intensity={0.9} />
 			<group>
-				<Model {...config.model} color={color} />
+				<Model {...config.model} map={map} />
 				<TextureBackground {...config.textureBackground} map={map} />
 				<Floor />
 				<ContactShadows position={[0, -0.499, 0]} frames={20} />
@@ -75,17 +55,15 @@ function Floor() {
 }
 
 function Camera() {
-	const cam = useRef();
-	const { setDpr } = useThree();
+	const { setDpr, camera } = useThree();
 	useLayoutEffect(() => {
-		const camera = cam.current._camera;
 		camera.fov = window.innerWidth < 1020 ? 50 : 30;
 		camera.updateProjectionMatrix();
 
 		if (window.innerWidth > 700) {
 			setDpr(window.devicePixelRatio * 0.8);
 		}
-	}, []);
+	}, [window.innerWidth]);
 
-	return <CameraControls ref={cam} />;
+	return;
 }

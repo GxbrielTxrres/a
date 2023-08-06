@@ -51,8 +51,8 @@ function curvedPlaneGeometry(width = 1, height = 1, radius = 2) {
 		position.setZ(i, height);
 	}
 
-	// geometry.computeVertexNormals()
-	// position.needsUpdate = true
+	// geometry.computeVertexNormals();
+	// position.needsUpdate = true;
 
 	return { geometry, heightMin, heightMax };
 }

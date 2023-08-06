@@ -1,12 +1,11 @@
 import {
 	EffectComposer,
 	Autofocus,
+	BrightnessContrast,
 	Bloom,
 	SMAA,
 } from "@react-three/postprocessing";
 import { useControls } from "leva";
-import { EdgeDetectionMode } from "postprocessing";
-import { useMemo } from "react";
 
 export default function Effects() {
 	const { autoFocus } = useControls("Effects", {
@@ -14,7 +13,7 @@ export default function Effects() {
 	});
 	return (
 		<EffectComposer disableNormalPass multisampling={0}>
-			<Bloom mipmapBlur intensity={0.8} />
+			<Bloom mipmapBlur intensity={0.4} />
 			<SMAA />
 
 			{autoFocus && (
@@ -27,9 +26,7 @@ export default function Effects() {
 				/>
 			)}
 
-			{/* <BrightnessContrast brightness={0.2} contrast={0.01} /> */}
-			{/* {enabled && <SSR {...props} />} */}
-			{/* <BrightnessContrast brightness={0.1} contrast={0.01} /> */}
+			<BrightnessContrast brightness={0.125} contrast={0.3} />
 		</EffectComposer>
 	);
 }

@@ -1,7 +1,5 @@
-import { Environment, Lightformer, useTexture } from "@react-three/drei";
+import { Environment, Lightformer } from "@react-three/drei";
 import { useMemo } from "react";
-import { Color, Light } from "three";
-import { useControls } from "leva";
 
 export default function Env({ color, map }) {
 	const envMemo = useMemo(() => {

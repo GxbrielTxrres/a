@@ -8,25 +8,31 @@ Title: Corvette Stingray
 */
 
 import { useEffect, useRef, useMemo } from "react";
-import { Box, Decal, RenderTexture, Text, useGLTF } from "@react-three/drei";
-import { useCarStore } from "../stores/store";
+import {
+	RenderTexture,
+	PerspectiveCamera,
+	Decal,
+	useGLTF,
+	Text,
+} from "@react-three/drei";
 import { patchShaders } from "gl-noise";
 import { gsap } from "gsap";
 import CSM from "three-custom-shader-material";
 import { Vector2, Color } from "three";
 import { useControls } from "leva";
+import { useFrame } from "@react-three/fiber";
 
-export function Model(props) {
+export function Model({ map, ...props }) {
 	const trunk = useRef();
 	const hood = useRef();
 	const group = useRef();
 	const hoodScoop = useRef();
-
 	const { nodes, materials } = useGLTF("/corvette-transformed.glb");
 
-	const { openTrunk, openHood } = useControls("Car", {
+	const { openTrunk, openHood, decal } = useControls("Car", {
 		openTrunk: false,
 		openHood: false,
+		decal: true,
 	});
 
 	useEffect(() => {
@@ -955,11 +961,11 @@ export default function CarMaterial() {
 		},
 	});
 	const uniforms = useRef({
-		uProgress: { value: 1 },
+		uProgress: { value: 0 },
 		uResolution: {
-			value: new Vector2(window.innerWidth, window.innerHeight),
+			value: new Vector2(0, 0),
 		},
-		uNewColor: { value: new Color(color.r, color.g, color.b) },
+		uNewColor: { value: new Color(0, 0, 0) },
 		uOriginalColor: { value: new Color(0, 0, 0) },
 	});
 
@@ -979,30 +985,29 @@ export default function CarMaterial() {
 				color = { r: 0.2, g: 0.2, b: 0.2 };
 				break;
 		}
-		const timeout = setTimeout(() => {
-			uniforms.current.uNewColor.value = color;
-		}, 1000);
 
-		return () => clearTimeout(timeout);
+		uniforms.current.uOriginalColor.value =
+			uniforms.current.uNewColor.value;
+
+		uniforms.current.uNewColor.value = color;
 	}, [color]);
 
 	useEffect(() => {
-		if (uniforms.current.uProgress.value === 1) {
-			gsap.to(uniforms.current.uProgress, {
-				value: 0,
-				duration: 3,
-				ease: "power2.inOut",
-			});
-		} else if (uniforms.current.uProgress.value === 0) {
-			gsap.to(uniforms.current.uProgress, {
-				value: 1,
-				duration: 1,
-				repeat: 1,
-				yoyo: true,
-				ease: "power2.inOut",
-			});
-		}
+		uniforms.current.uProgress.value = 1;
+
+		gsap.to(uniforms.current.uProgress, {
+			value: 0,
+			duration: 3,
+			ease: " power3.inOut",
+		});
 	}, [color]);
+
+	useFrame(() => {
+		uniforms.current.uResolution.value = new Vector2(
+			window.innerWidth,
+			window.innerHeight,
+		);
+	});
 
 	const vertexShader = useMemo(
 		() => /* glsl */ `
@@ -1047,6 +1052,8 @@ export default function CarMaterial() {
 
                        
             csm_DiffuseColor = vec4(color,1.0);
+
+			
           }
         `),
 		[],
