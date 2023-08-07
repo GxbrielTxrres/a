@@ -32,7 +32,6 @@ export function Model({ map, ...props }) {
 	const { openTrunk, openHood, decal } = useControls("Car", {
 		openTrunk: false,
 		openHood: false,
-		decal: true,
 	});
 
 	useEffect(() => {
@@ -957,7 +956,7 @@ export default function CarMaterial() {
 	const { materials } = useGLTF("/corvette-transformed.glb");
 	let { color } = useControls({
 		color: {
-			options: ["black", "blue", "metallic silver", "grey"],
+			options: ["black", "blue", "metallic silver", "grey", "red"],
 		},
 	});
 	const uniforms = useRef({
@@ -983,6 +982,9 @@ export default function CarMaterial() {
 				break;
 			case "grey":
 				color = { r: 0.2, g: 0.2, b: 0.2 };
+				break;
+			case "red":
+				color = { r: 1, g: 0, b: 0 };
 				break;
 		}
 
@@ -1044,11 +1046,10 @@ export default function CarMaterial() {
 
 
 			vec3 color = vec3(uOriginalColor);
-
 			float pct = plot(st);
 
-
-			color = (1.0-pct)*color+pct*uNewColor;
+			float wave = 0.5 * sin(st.x * 10.0) + 0.5;
+			color = mix(color, uNewColor, wave * pct);
 
                        
             csm_DiffuseColor = vec4(color,1.0);

@@ -6,16 +6,15 @@ import {
 import { Model } from "./Corvette";
 import Env from "./Env";
 import Effects from "./Effects";
-import { Perf } from "r3f-perf";
 import { useLayoutEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import TextureBackground from "./TextureBackground";
 import { config } from "../utils/config";
 export default function Experience() {
 	const [map] = useTexture([config.env.map]);
+
 	return (
 		<>
-			<Perf position={"top-left"} />
 			{/* lighting + effects */}
 			<Env map={map} color={config.env.color} />
 			<Effects />
