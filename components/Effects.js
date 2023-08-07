@@ -8,21 +8,21 @@ import {
 import { useControls } from "leva";
 
 export default function Effects() {
-	const { autoFocus } = useControls("Effects", {
-		autoFocus: true,
+	const { blur, blurAmount } = useControls("Effects", {
+		blur: true,
+		blurAmount: { value: 5, min: 1, max: 20, step: 1 },
 	});
 	return (
 		<EffectComposer disableNormalPass multisampling={0}>
 			<Bloom mipmapBlur intensity={0.4} />
 			<SMAA />
 
-			{autoFocus && (
+			{blur && (
 				<Autofocus
-					focusRange={0.011}
+					focusRange={0.02}
 					resolutionX={window.innerWidth < 700 ? 256 : 512}
 					resolutionY={window.innerWidth < 700 ? 256 : 512}
-					resolutionScale={window.innerWidth < 500 ? 0.7 : 1}
-					bokehScale={5}
+					bokehScale={blurAmount}
 				/>
 			)}
 
